@@ -29,7 +29,7 @@ router.get('/:commentId', (req, res) => {
     const commentId = Number(req.params.commentId);
     const comment = comments.find({ id: commentId });
     console.log(comment);
-    if(!comment) {
+    if(!comment || (Array.isArray(comment) && comment.length === 0)) {
         res.status(404).json({ error: 'Comment not found' });
     } else {
         res.send(comment);
