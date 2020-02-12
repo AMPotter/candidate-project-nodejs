@@ -9,22 +9,31 @@ router.post('/', (req, res) => {
     
     if(!postId || !name || !email || !body) {
         res.status(422).send({ error: 'Invalid comment' });
+    } else {
+        res.json(req.body);
     }
-    res.json(req.body);
 });
 
 router.get('/', (req, res) => {
     if(!req.headers.authorization) {
         res.status(403).json({ error: 'Unauthorized request' });
+    } else {
+        res.send(comments);
     }
-    res.send(comments);
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:commentId', (req, res) => {
     if(!req.headers.authorization) {
         res.status(403).json({ error: 'Unauthorized request' });
     }
-    res.send(comments.get(req.params.id));
+    const commentId = Number(req.params.commentId);
+    const comment = comments.find({ id: commentId });
+    console.log(comment);
+    if(!comment) {
+        res.status(404).json({ error: 'Comment not found' });
+    } else {
+        res.send(comment);
+    }
 });
 
 router.put('/:id', (req, res) => {
@@ -41,15 +50,17 @@ router.put('/:id', (req, res) => {
     }
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:commentId', (req, res) => {
     if(!req.headers.authorization) {
         res.status(403).json({ error: 'Unauthorized request' });
     }
 
-    const comment = comments.findOne({ id: req.params.id });
-    comments.remove(comment);
+    const commentId = Number(req.params.commentId);
+    const removed = comments.find({ id: commentId });
+    comments.remove(removed);
 
-    if(comment) {
+    console.log(removed);
+    if(removed) {
         res.send('Comment deleted successfully');
     } else {
         res.status(500).send('Error occurred during comment deletion');
