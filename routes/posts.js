@@ -3,6 +3,7 @@ const db = require('../config/loki').getDatabase();
 module.exports = router;
 
 const posts = db.getCollection('posts');
+const comments = db.getCollection('comments');
 
 router.post('/', (req, res) => {
     const { postId, name, email, body } = req.body;
@@ -27,13 +28,15 @@ router.get('/:postId', (req, res) => {
         res.status(403).json({ error: 'Unauthorized request' });
     }
 
+    
     const postId = Number(req.params.postId);
     const post = posts.get(postId, false);
+    const postComments = comments.find({ postId: postId });
 
     if(!post || (Array.isArray(post) && post.length === 0)) {
         res.status(404).send('Post not found');
     } else {
-        res.send(post);
+        res.json({ post, postComments });
     }
 });
 
