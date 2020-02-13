@@ -38,33 +38,33 @@ router.get('/', (req, res) => {
     res.send(users);
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:userId', (req, res) => {
     if(!req.headers.authorization) {
         res.status(403).json({ error: 'Unauthorized request' });
     }
-    res.json(users.get(req.params.id));
+    res.json(users.get(req.params.userId));
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:userId', (req, res) => {
     if(!req.headers.authorization) {
         res.status(403).json({ error: 'Unauthorized request' });
     }
 
-    let user = users.findOne({ id: req.params.id });
-    const { name, username, email, address, phoneNumbers, website } = req.body;
-
+    const userId = Number(req.params.userId);
+    let user = users.findOne({ id: userId });
+    
     if(!user) {
         res.status(404).send('User not found');
     }
     
-    user = {
-        name: name,
-        username: username,
-        email: email,
-        address: address,
-        phoneNumbers: phoneNumbers,
-        website: website
-    };
+    const { name, username, email, address, phoneNumbers, website } = req.body;
+    
+    user.name = name;
+    user.username = username;
+    user.email = email;
+    user.address = address;
+    user.phoneNumbers = phoneNumbers;
+    user.website = website;
 
     const updated = users.update(user);
 
