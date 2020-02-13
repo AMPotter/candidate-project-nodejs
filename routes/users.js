@@ -75,15 +75,16 @@ router.put('/:id', (req, res) => {
     }
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:userId', (req, res) => {
     if(!req.headers.authorization) {
         res.status(403).json({ error: 'Unauthorized request' });
     }
 
-    const user = users.findOne({ id: req.params.id });
+    const userId = Number(req.params.userId);
+    const user = users.find({ id: userId });
     users.remove(user);
 
-    if(user) {
+    if(!user || (Array.isArray(user) && user.length > 0)) {
         res.send('User deleted successfully');
     } else {
         res.status(500).send('Error occurred during user deletion');
