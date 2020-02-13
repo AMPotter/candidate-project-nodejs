@@ -44,11 +44,11 @@ router.put('/:commentId', (req, res) => {
     
     const commentId = Number(req.params.commentId);
     const comment = comments.findOne({ id: commentId });
-    console.log(comment);
 
     if(!comment) {
         res.status(404).send('Comment not found');
     }
+    
     const { body } = req.body;
     comment.body = body;
     const updated = comments.update(comment);

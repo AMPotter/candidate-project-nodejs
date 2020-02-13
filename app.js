@@ -18,6 +18,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/comments', require('./routes/comments'));
 app.use('/users', require('./routes/users'));
+app.use('/posts', require('./routes/posts'));
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
